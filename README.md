@@ -28,4 +28,4 @@ Submission date: 10/04/22
 
 Team member 1 name: Andrew Goetz
 
-Team member 2 name: Fotis 
+Team member 2 name: Fotis Antonatos
