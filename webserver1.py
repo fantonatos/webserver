@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # import socket module
 from socket import *
 
@@ -5,24 +7,31 @@ from socket import *
 import sys
 
 # Prepare a sever socket
+# open socket on port 8080
 serverSocket = socket(AF_INET, SOCK_STREAM)
-### YOUR CODE HERE ###
+serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+serverSocket.bind(('', 8080))
+serverSocket.listen(10)
 
 while True:
     # Establish the connection
     print('Ready to serve...')
 
-    connectionSocket, addr = ### YOUR CODE HERE ###
+    connectionSocket, addr = serverSocket.accept()
 
     try:
-        message = ### YOUR CODE HERE ###
+        message = connectionSocket.recv(1024).decode()
 
         filename = message.split()[1]
+
         f = open(filename[1:])
-        outputdata = ### YOUR CODE HERE ###
+
+        # read entire file into outputdata
+        outputdata = f.readlines()
 
         # Send one HTTP header line into socket
-        ### YOUR CODE HERE ###
+        connectionSocket.send('HTTP/1.1 200 OK\r\n'.encode())
+        connectionSocket.send('\r\n'.encode())
 
         # Send the content of the requested file into socket
         for i in range(0, len(outputdata)):
@@ -33,10 +42,11 @@ while True:
         connectionSocket.close()
     except IOError:
         # Send response message for file not found
-        ### YOUR CODE HERE ###
+        connectionSocket.send('HTTP/1.1 404 NOT FOUND\r\n'.encode())
+
 
         # Close client socket
-        ### YOUR CODE HERE ###
+        connectionSocket.close()
 
 # Close server socket
 serverSocket.close()
